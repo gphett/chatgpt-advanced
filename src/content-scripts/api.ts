@@ -2,6 +2,7 @@ import { Readability } from "@mozilla/readability"
 import { parseHTML } from "linkedom"
 import Browser from "webextension-polyfill"
 import { SearchResult } from "./ddg_search"
+import { getUserConfig } from "src/util/userConfig"
 
 
 const cleanText = (text: string) =>
@@ -34,18 +35,24 @@ export async function getWebpageTitleAndText(url: string, html_str = ''): Promis
             }
         }
         html = await response.text()
-
     }
 
 
     const doc = parseHTML(html).document
     const parsed = new Readability(doc).parse()
 
-    if (!parsed) {
-        return { title: "Could not parse the page.", body: "", url }
+    if (!parsed || !parsed.textContent) {
+        return { title: "Could not parse the page.", body: "Could not parse the page.", url }
     }
+    
+    console.log("text", parsed.textContent);
+    let text = cleanText(parsed.textContent)
 
-    const text = cleanText(parsed.textContent)
+    const userConfig = await getUserConfig()
+    if (userConfig.trimLongText && text.length > 14400) {
+        text = text.slice(0, 14400)
+        text += "\n\n[Text has been trimmed to 14,500 characters. You can disable this on WebChatGPT's options page.]"
+    }
     return { title: parsed.title, body: text, url }
 }
 

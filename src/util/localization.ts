@@ -17,7 +17,8 @@ export const Languages = {
     ru: "Русский",
     zh: "中文",
     "zh-TW": "中文（臺灣）",
-    he: "עברית"
+    he: "עברית",
+    bg: "Български"
 }
 
 const DEFAULT_LANGUAGE = 'en'
@@ -48,6 +49,8 @@ export const localizationKeys = {
     defaultPrompt: 'default_prompt',
     UI: {
         language: 'language',
+        options: 'options',
+        trimLongText: 'trim_long_text',
         supportThisProject: 'support_this_project',
         supportMe: 'support_me',
         chooseLanguage: 'choose_language',
